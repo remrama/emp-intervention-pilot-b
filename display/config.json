@@ -1,0 +1,38 @@
+{
+    "data_directory": "../data",
+    "video_directory": "../stimuli/video",
+    "audio_directory": "../stimuli/audio",
+
+    "quit_button": "q",
+    "next_button": "space",
+
+    "bct_task_length": 10,
+
+    "svp_task_length": 10,
+    "svp_trial_length": 4,
+    "svp_trial_jitter": 1,
+
+    "practice_video_id": "ID124_vid1",
+
+    "monitor_specs_207": {
+        "distance_cm": 70,
+        "width_cm": 53,
+        "size_pix": [1920, 1080]
+    },
+
+    "SetA_video_ids": [
+        "ID113_vid3",
+        "ID130_vid6",
+        "ID168_vid1",
+        "ID174_vid3",
+        "ID181_vid2"
+    ],
+
+    "SetB_video_ids": [
+        "ID116_vid6",
+        "ID118_vid5",
+        "ID128_vid2",
+        "ID131_vid1",
+        "ID165_vid4"
+    ]
+}

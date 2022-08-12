@@ -1,0 +1,15 @@
+name: psychopy
+channels:
+- conda-forge
+dependencies:
+- python=3.6
+- psychopy
+- pip
+- pip:
+  - psychtoolbox
+  - pygame
+  - pyo
+  - pyglet==1.4.10 # bug https://github.com/psychopy/psychopy/issues/2876
+  - pyparallel; platform_system != "Windows"
+  - SoundFile; platform_system == "Windows"
+  - websocket_client
