@@ -18,6 +18,8 @@ This repo has display and analysis code for a behavioral pilot (in-lab) study. W
 
 * `config.json` - configuration file for global variables
 * `utils.py` - file with python functions useful in multiple scripts
+* `runall.sh` - run all analyses in sequence
+
 
 ### Converting source data to raw (minimally processed)
 
@@ -37,11 +39,6 @@ python source2raw-eat.py
 #   |---------- sub-001_task-eat_acq-post_beh.tsv
 #   |---------- sub-001_task-eat_acq-pre_beh.json
 #   |---------- sub-001_task-eat_acq-pre_beh.tsv
-#
-# sub-002/beh/
-#   |---------- sub-002_task-svp_beh.json
-#   |---------- sub-002_task-svp_beh.tsv
-# ...
 
 # The Qualtrics data goes into one file.
 python source2raw-survey.py         # => phenotype/debriefing.tsv
