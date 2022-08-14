@@ -1,5 +1,6 @@
 """Plot the aggregate correlation results and run stats.
 """
+import argparse
 import os
 import numpy as np
 import pandas as pd
@@ -10,6 +11,13 @@ import utils
 import matplotlib.pyplot as plt
 
 utils.load_matplotlib_settings()
+
+
+parser = argparse.ArgumentParser()
+parser.add_argument("-p", "--pos", action="store_true", help="Only include positive videos.")
+args = parser.parse_args()
+
+positive_only = args.pos
 
 
 import_filepath = os.path.join(utils.load_config().bids_root,
@@ -36,7 +44,35 @@ df["intervention"] = df["participant_id"].apply(lambda x: "svp" if int(x.split("
 
 df = df.rename(columns={"actor_correlation-mean": "empathic_accuracy"})
 
+if positive_only:
+    video_affect = {
+        "ID113_vid3": "negative",
+        "ID130_vid6": "positive",
+        "ID168_vid1": "positive",
+        "ID174_vid3": "positive",
+        "ID181_vid2": "positive",
+        "ID116_vid6": "positive",
+        "ID118_vid5": "positive",
+        "ID128_vid2": "negative",
+        "ID131_vid1": "positive",
+        "ID165_vid4": "positive",
+    }
 
+    # Have to recalculate (not efficient, but hacking bc of late look).
+    import_path = os.path.join(utils.load_config().bids_root,
+        "derivatives", "pandas", "task-eat_agg-trial_corrs.tsv")
+    dff = pd.read_csv(import_path, sep="\t")
+    dff["acquisition_id"] = dff["acquisition_id"].str.split("-").str[1]
+    dff["affect"] = dff["stimulus"].map(video_affect)
+    dff = dff.groupby(
+        ["participant_id", "acquisition_id", "affect"]
+        )["actor_correlation"].mean(
+        ).rename("empathic_accuracy"
+        ).reset_index()
+    dff = dff.query("affect.eq('positive')")
+    dff = dff.drop(columns="affect")
+    df = df.drop(columns=["empathic_accuracy"])
+    df = df.merge(dff, on=["participant_id", "acquisition_id"])
 
 ################ run stats
 

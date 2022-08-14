@@ -18,6 +18,10 @@ export_filepath_data = os.path.join(export_dir, export_basename_data)
 export_filepath_descr = os.path.join(export_dir, export_basename_descr)
 utils.make_pathdir_if_not_exists(export_filepath_descr)
 
+# Add another output that includes individual video scores
+export_basename_trials = "task-eat_agg-trial_corrs.tsv"
+export_filepath_trials = os.path.join(export_dir, export_basename_trials)
+
 
 df = utils.stack_raw_task_data("eat")
 
@@ -50,6 +54,8 @@ trial_df = df.reset_index(
 
 trial_df = trial_df.apply(pd.Series)
 trial_df.columns = ["actor_correlation", "crowd_correlation"]
+
+trial_df.to_csv(export_filepath_trials, index=True, float_format="%.3f", sep="\t")
 
 
 # cycle_df = df.groupby(["participant_id","cycle"]
