@@ -19,6 +19,7 @@ export_plot_fname = os.path.join(utils.load_config().bids_root,
 export_table_fname = export_plot_fname.replace(
     "matplotlib", "pandas").replace(".png", ".tsv")
 
+export_plot_fname2 = export_plot_fname.replace(".png", "_desc.png")
 
 df = utils.stack_raw_task_data("bct")
 
@@ -174,7 +175,41 @@ ax.text(.1, 60, "High exercise", **TEXT_KWARGS)
 
 fig.align_ylabels(axes)
 
-
-
 plt.savefig(export_plot_fname)
+plt.close()
+
+
+########### other plot
+
+
+rr_subj_descriptives["color"] = rr_subj_descriptives.index.map(subj_palette)
+rr_subj_descriptives = rr_subj_descriptives.reset_index()
+
+BARH_KWARGS = dict(clip_on=False, edgecolor="black", linewidth=.5, height=.8)
+FIGSIZE = (4, 3)
+
+fig, axes = plt.subplots(ncols=2, figsize=FIGSIZE, sharey=True)
+
+for metric, ax in zip(["mean", "std"], axes):
+    ax.barh("participant_id", metric, color="color", data=rr_subj_descriptives, **BARH_KWARGS)
+
+    if metric == "mean":
+        xlabel = r"Respiration rate, $f_{R}$"
+    elif metric == "std":
+        xlabel = r"Respiration rate variability, $\sigma_{R}$"
+    ax.set_xlabel(xlabel)
+
+    ax.grid(False)
+    ax.tick_params(which="both", top=False, left=False, right=False)
+    # ax.set_xlim(0, 1)
+    # ax.xaxis.set(major_locator=plt.MultipleLocator(1),
+    #     minor_locator=plt.MultipleLocator(.5),
+    #     major_formatter=plt.matplotlib.ticker.PercentFormatter(xmax=1))
+    ax.spines[["top", "right"]].set_visible(False)
+    ax.spines["bottom"].set_position(("outward", 5))
+
+ax.invert_yaxis()
+fig.align_labels()
+
+plt.savefig(export_plot_fname2)
 plt.close()

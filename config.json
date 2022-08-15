@@ -9,6 +9,11 @@
         "InstitutionDepartmentName": "Department of Psychology"
     },
 
+    "intervention_colors": {
+        "svp": "red",
+        "bct": "blue"
+    },
+
     "participant_exclusions": {
         "sub-003": "stopped BCT after just a few cycles",
         "sub-015": "didn't perform EAT based on actor's current emotion",

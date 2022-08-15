@@ -86,7 +86,9 @@ python bct-descr_respirationrate.py # => pandas/task-bct_acq-pre_agg-sub_rrate_d
 # Visualize the presses over time as presses and respiration rate.
 python bct-plot_presses.py          # => matplotlib/task-bct_presses.png
 python bct-plot_respirationrate.py  # => matplotlib/task-bct_rrate.png
+                                    # => matplotlib/task-bct_rrate_desc.png
                                     # => pandas/task-bct_rrate.tsv
+python bct-plot_respirationrate_joint.py  # => matplotlib/task-bct_rrate_desc_joint.png
 ```
 
 ### More
