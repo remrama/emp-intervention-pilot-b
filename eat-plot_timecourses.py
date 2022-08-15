@@ -17,7 +17,7 @@ export_fname = os.path.join(utils.load_config().bids_root,
     "derivatives", "matplotlib", "task-eat_timecourses.png")
 
 setA_video_ids = utils.load_config(False)["SetA_video_ids"]
-setB_video_ids = utils.load_config(False)["SetA_video_ids"]
+setB_video_ids = utils.load_config(False)["SetB_video_ids"]
 video_id_list = setA_video_ids + setB_video_ids
 participants = utils.load_participant_file()
 
@@ -32,7 +32,14 @@ FIGSIZE = (4, 6)
 fig, axes = plt.subplots(nrows=5, ncols=2, figsize=FIGSIZE,
     sharex=True, sharey=True, constrained_layout=True)
 
-for video_id, ax in zip(video_id_list, axes.flat):
+for video_id in video_id_list:
+    if video_id in setA_video_ids:
+        col = 0
+        row = setA_video_ids.index(video_id)
+    elif video_id in setB_video_ids:
+        col = 1
+        row = setB_video_ids.index(video_id)
+    ax = axes[row, col]
     actor_ratings, crowd_ratings = utils.get_true_timecourses(video_id)
     actor_ratings = stats.zscore(actor_ratings, nan_policy="raise")
     crowd_ratings = stats.zscore(crowd_ratings, nan_policy="raise")
