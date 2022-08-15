@@ -41,6 +41,7 @@ def load_all_data():
     root_dir = load_config().bids_root
     survey_path = os.path.join(root_dir, "phenotype", "debriefing.tsv")
     bct_path = os.path.join(root_dir, "derivatives", "pandas", "task-bct_agg-sub_rrate.tsv")
+    bct2_path = os.path.join(root_dir, "derivatives", "pandas", "task-bct_rrate.tsv")
     eat_pre_path = os.path.join(root_dir, "derivatives", "pandas", "task-eat_acq-pre_agg-sub_corrs.tsv")
     eat_post_path = os.path.join(root_dir, "derivatives", "pandas", "task-eat_acq-post_agg-sub_corrs.tsv")
 
@@ -51,13 +52,16 @@ def load_all_data():
     participants = load_participant_file()
     survey = pd.read_csv(survey_path, sep="\t")
     bct = pd.read_csv(bct_path, sep="\t")
+    bct2 = pd.read_csv(bct2_path, sep="\t")
     eat_pre = pd.read_csv(eat_pre_path, sep="\t")
     eat_post = pd.read_csv(eat_post_path, sep="\t")
 
     survey["participant_id"] = survey["participant_id"].map(lambda x: f"sub-{x:03d}")
+    bct2.columns = [ c if c == "participant_id" else f"rrate-{c}" for c in bct2 ]
 
     df = participants.merge(survey, on="participant_id"
         ).merge(bct, on="participant_id", how="left"
+        ).merge(bct2, on="participant_id", how="left"
         ).merge(eat_pre, on="participant_id"
         ).merge(eat_post, on="participant_id", suffixes=("_pre", "_post"))
 
@@ -169,10 +173,10 @@ def load_participant_palette(separate_by_task=True):
     import colorcet as cc
     participants = load_participant_file()
     if separate_by_task:
-        cond1_participants = participants.query("intervention=='bct'").index.unique()
-        cond2_participants = participants.query("intervention=='svp'").index.unique()
-        cond1_palette = { p: cc.cm.glasbey_cool(i) for i, p in enumerate(cond1_participants) }
-        cond2_palette = { p: cc.cm.glasbey_warm(i) for i, p in enumerate(cond2_participants) }
+        cond1_participants = participants.query("intervention=='svp'").index.unique()
+        cond2_participants = participants.query("intervention=='bct'").index.unique()
+        cond1_palette = { p: cc.cm.glasbey_warm(i) for i, p in enumerate(cond1_participants) }
+        cond2_palette = { p: cc.cm.glasbey_cool(i) for i, p in enumerate(cond2_participants) }
         assert 0 == len(cond1_palette.keys() & cond2_palette.keys()), "Should not have overlapping subjects."
         participant_palette = cond1_palette | cond2_palette
     else: # glasbey_bw or glasbey_dark

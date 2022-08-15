@@ -102,4 +102,6 @@ python survey-anova.py -v AS
 python bct-attention.py             # => matplotlib/task-bct_attention_detailed.png
 
 python meditation.py                # => matplotlib/meditation_prior.png
+python outcomes.py                  # => matplotlib/task-eat_intrvXoutcomes.png
+python bct-correlations.py          # => matplotlib/task-bct_correlations.png
 ```
