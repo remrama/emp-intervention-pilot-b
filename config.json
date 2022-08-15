@@ -9,6 +9,13 @@
         "InstitutionDepartmentName": "Department of Psychology"
     },
 
+    "participant_exclusions": {
+        "sub-003": "stopped BCT after just a few cycles",
+        "sub-015": "didn't perform EAT based on actor's current emotion",
+        "sub-021": "didn't perform EAT based on actor's current emotion",
+        "sub-025": "high BCT press-rate"
+    },
+
     "SetA_video_ids": [
         "ID113_vid3",
         "ID130_vid6",

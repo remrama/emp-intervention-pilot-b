@@ -15,8 +15,11 @@ def load_config(as_object=True):
 def load_participant_file():
     import os
     import pandas as pd
+    config = load_config(as_object=False)
     path = os.path.join(load_config().bids_root, "participants.tsv")
-    return pd.read_csv(path, sep="\t", index_col="participant_id")
+    df = pd.read_csv(path, sep="\t", index_col="participant_id")
+    df["included"] = df.index.map(lambda x: x not in config["participant_exclusions"])
+    return df
 
 def find_source_files(task_label, extension):
     import os
