@@ -94,8 +94,8 @@ for column_name in df:
 # Add 0 to meditation frequency (people that said "no" to any prior exp didn't see this).
 # df["Meditation_Freq_1"] = df["Meditation_Freq_1"].fillna(0)
 # meditation_columns = [ c for c in df if c.startswith("Meditation") ]
-df.loc[df["Meditation_Prior"].eq(1), ["Meditation_Freq_1", "Meditation_Current"]] = 0
-df.loc[df["Meditation_Current"].eq(1), ["Meditation_Freq2", "Meditation_Freq3"]] = 0
+# df.loc[df["Meditation_Prior"].eq(1), ["Meditation_Freq_1", "Meditation_Current"]] = 0
+# df.loc[df["Meditation_Current"].eq(1), ["Meditation_Freq2", "Meditation_Freq3"]] = 0
 
 def imputed_mean(row):
     if row.isna().mean() > .5:
@@ -114,9 +114,9 @@ associative_columns = [ f"SES_{x}" for x in ASSOCIATIVE_PROBES ]
 # df["state_affective_empathy"] = df[affective_columns].sub(1).mean(axis=1, skipna=True)
 # df["state_cognitive_empathy"] = df[cognitive_columns].sub(1).mean(axis=1, skipna=True)
 # df["state_associative_empathy"] = df[associative_columns].sub(1).mean(axis=1, skipna=True)
-df["state_affective_empathy"] = df[affective_columns].sub(1).apply(imputed_mean, axis=1)
-df["state_cognitive_empathy"] = df[cognitive_columns].sub(1).apply(imputed_mean, axis=1)
-df["state_associative_empathy"] = df[associative_columns].sub(1).apply(imputed_mean, axis=1)
+df["SES_affective"] = df[affective_columns].sub(1).apply(imputed_mean, axis=1)
+df["SES_cognitive"] = df[cognitive_columns].sub(1).apply(imputed_mean, axis=1)
+df["SES_associative"] = df[associative_columns].sub(1).apply(imputed_mean, axis=1)
 
 df = df.drop(columns=affective_columns+cognitive_columns+associative_columns)
 
@@ -126,8 +126,8 @@ MIND_PROBES = [1, 2, 3, 4, 5, 6, 7, 10, 11, 12, 15, 16, 17, 19, 20]
 BODY_PROBES = [8, 9, 13, 14, 18, 21]
 mind_columns = [ f"SMS_{x}" for x in MIND_PROBES ]
 body_columns = [ f"SMS_{x}" for x in BODY_PROBES ]
-df["state_mind_mindfulness"] = df[mind_columns].apply(imputed_mean, axis=1)
-df["state_body_mindfulness"] = df[body_columns].apply(imputed_mean, axis=1)
+df["SMS_mind"] = df[mind_columns].apply(imputed_mean, axis=1)
+df["SMS_body"] = df[body_columns].apply(imputed_mean, axis=1)
 
 df = df.drop(columns=mind_columns+body_columns)
 

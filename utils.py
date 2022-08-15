@@ -30,6 +30,47 @@ def find_source_files(task_label, extension):
     return sorted(file_list)
 
 
+def load_all_data():
+    """Load and merge survey data, BCT score, EAT scores
+    so each participant is 1 row.
+    """
+    import json
+    import os
+    import pandas as pd
+
+    root_dir = load_config().bids_root
+    survey_path = os.path.join(root_dir, "phenotype", "debriefing.tsv")
+    bct_path = os.path.join(root_dir, "derivatives", "pandas", "task-bct_agg-sub_rrate.tsv")
+    eat_pre_path = os.path.join(root_dir, "derivatives", "pandas", "task-eat_acq-pre_agg-sub_corrs.tsv")
+    eat_post_path = os.path.join(root_dir, "derivatives", "pandas", "task-eat_acq-post_agg-sub_corrs.tsv")
+
+    sidecar_path = survey_path.replace(".tsv", ".json")
+    with open(sidecar_path, "r") as f:
+        survey_sidecar = json.load(f)
+
+    participants = load_participant_file()
+    survey = pd.read_csv(survey_path, sep="\t")
+    bct = pd.read_csv(bct_path, sep="\t")
+    eat_pre = pd.read_csv(eat_pre_path, sep="\t")
+    eat_post = pd.read_csv(eat_post_path, sep="\t")
+
+    survey["participant_id"] = survey["participant_id"].map(lambda x: f"sub-{x:03d}")
+
+    df = participants.merge(survey, on="participant_id"
+        ).merge(bct, on="participant_id", how="left"
+        ).merge(eat_pre, on="participant_id"
+        ).merge(eat_post, on="participant_id", suffixes=("_pre", "_post"))
+
+    # Add delta (difference) columns for all the EAT measures.
+    for col in df:
+        if col.endswith("_post"):
+            pre_col = col.replace("_post", "_pre")
+            diff_col = col.replace("_post", "_delta")
+            df[diff_col] = df[col].sub(df[pre_col])
+
+    return df, survey_sidecar
+
+
 def make_pathdir_if_not_exists(filepath):
     import os
     directory = os.path.dirname(filepath)

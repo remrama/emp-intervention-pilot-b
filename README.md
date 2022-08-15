@@ -57,15 +57,21 @@ python eat-descr_correlations.py    # => pandas/task-eat_acq-pre_agg-sub_corrs.t
 python eat-merge_acqs.py            # => pandas/task-eat_agg-sub_corrs.tsv
 
 # Analyze/visualize the interaction between acquisition (pre, post) and intervention (svp/bct).
-python eat-interaction.py           # => pingouin/task-eat_acqXint_anova.tsv
-                                    # => pingouin/task-eat_acqXint_pwise.tsv
-                                    # => matplotlib/task-eat_acqXint.png
+python eat-interaction.py -s actor -m mean  # => pingouin/task-eat_acqXint_anova.tsv
+                                            # => pingouin/task-eat_acqXint_pwise.tsv
+                                            # => matplotlib/task-eat_acqXint_metric-mean_source-actor.png
+python eat-interaction.py -s actor -m std
+python eat-interaction.py -s crowd -m mean
+python eat-interaction.py -s crowd -m std
 
 # Visualize lots of correlations between empathy and dreams.
 python eat-dreams.py                # => matplotlib/task-eatXdreams.png
 
 # Visualize the raw empathy accuracy task timecourses.
 python eat-plot_timecourses.py      # => matplotlib/task-eat_timecourses.png
+
+# Visualize the reported empathic accuracy strategy of each participant.
+python eat-strategy.py              # => matplotlib/task-eat_strategy.png
 ```
 
 ### Breath Counting Task analyses
