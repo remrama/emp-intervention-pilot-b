@@ -68,7 +68,7 @@ trial_df.to_csv(export_filepath_trials, index=True, float_format="%.3f", sep="\t
 # cycle_df["cycle_correct"] = cycle_df["cycle_accuracy"].eq("correct")
 
 for acquisition_id, acquisition_df in trial_df.groupby("acquisition_id"):
-    participant_df = acquisition_df.groupby("participant_id").agg(["mean", "std", "min", "max"])
+    participant_df = acquisition_df.groupby("participant_id").agg(["count", "mean", "std", "min", "max"])
     participant_df.columns = participant_df.columns.map(lambda x: "-".join(x))
     export_path_data = export_filepath_data.replace("acq-REPLACE", acquisition_id)
     export_path_descr = export_filepath_descr.replace("acq-REPLACE", acquisition_id)
