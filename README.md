@@ -100,4 +100,6 @@ python survey-anova.py -v attention
 python survey-anova.py -v AS
 
 python bct-attention.py             # => matplotlib/task-bct_attention_detailed.png
+
+python meditation.py                # => matplotlib/meditation_prior.png
 ```
