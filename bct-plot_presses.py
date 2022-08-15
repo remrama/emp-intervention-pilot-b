@@ -19,9 +19,9 @@ import matplotlib.pyplot as plt
 import utils
 
 utils.load_matplotlib_settings()
+
+
 participant_palette = utils.load_participant_palette()
-
-
 
 export_filepath = os.path.join(utils.load_config().bids_root,
     "derivatives", "matplotlib", "task-bct_presses.png")
@@ -62,7 +62,7 @@ ACC_PALETTE = dict(correct="forestgreen", incorrect="indianred", space="gray")
 EXP_LENGTH = 10 # minutes, for xmax
 
 SCATTER_KWARGS = dict(alpha=.7, linewidths=0, clip_on=False)
-BARH_KWARGS = dict(color="white", clip_on=False, edgecolor="black", linewidth=1, height=.8)
+BARH_KWARGS = dict(clip_on=False, edgecolor="black", linewidth=1, height=.8)
 GRIDSPEC_KWARGS = dict(top=.7, bottom=.25, left=.1, right=.9,
     width_ratios=[10, 1], wspace=.1)
 
@@ -73,7 +73,7 @@ fig, (ax, axright) = plt.subplots(ncols=2, figsize=figsize,
     gridspec_kw=GRIDSPEC_KWARGS, sharey=True,
     constrained_layout=False)
 
-for i, (_, subj_df) in enumerate(df.groupby("participant_id")):
+for i, (subj, subj_df) in enumerate(df.groupby("participant_id")):
     for (resp, correct), _subj_df in subj_df.groupby(["response", "press_correct"]):
         if resp == "space":
             color = ACC_PALETTE[resp]
@@ -85,8 +85,9 @@ for i, (_, subj_df) in enumerate(df.groupby("participant_id")):
             s=RESPONSE_SIZES[resp], marker=RESPONSE_MARKERS[resp],
             **SCATTER_KWARGS)
     # second axis correct frequencies
+    subj_color = participant_palette[subj]
     subj_accuracy = subj_df.groupby("cycle")["press_correct"].last().mean()
-    axright.barh(i, subj_accuracy, **BARH_KWARGS)
+    axright.barh(i, subj_accuracy, color=subj_color, **BARH_KWARGS)
 
 ax.set_xlim(0, EXP_LENGTH*60*1000)
 msec2min = lambda x, pos: int(x/1000/60)
