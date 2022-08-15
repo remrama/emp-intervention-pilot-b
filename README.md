@@ -88,3 +88,16 @@ python bct-plot_presses.py          # => matplotlib/task-bct_presses.png
 python bct-plot_respirationrate.py  # => matplotlib/task-bct_rrate.png
                                     # => pandas/task-bct_rrate.tsv
 ```
+
+### More
+
+```bash
+python survey-anova.py -v SES       # => matplotlib/task-eat_intrvXses.png
+                                    # => pingouin/task-eat_intrvXses_anova.tsv
+                                    # => pingouin/task-eat_intrvXses_pwise.tsv
+python survey-anova.py -v SMS
+python survey-anova.py -v attention
+python survey-anova.py -v AS
+
+python bct-attention.py             # => matplotlib/task-bct_attention_detailed.png
+```
