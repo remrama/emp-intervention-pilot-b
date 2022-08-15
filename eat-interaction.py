@@ -15,16 +15,20 @@ utils.load_matplotlib_settings()
 
 parser = argparse.ArgumentParser()
 parser.add_argument("-p", "--pos", action="store_true", help="Only include positive videos.")
+parser.add_argument("-s", "--source", default="actor", choices=["actor", "crowd"], help="Choose source of empathic accuracy.")
+parser.add_argument("-m", "--metric", default="mean", choices=["mean", "std", "min", "max"], help="Choose metric of empathic accuracy.")
 args = parser.parse_args()
 
 positive_only = args.pos
+eat_source = args.source
+eat_metric = args.metric
 
+root_dir = utils.load_config().bids_root
+import_filepath = os.path.join(root_dir, "derivatives", "pandas",
+    "task-eat_acq-pre_agg-sub_corrs.tsv")
 
-import_filepath = os.path.join(utils.load_config().bids_root,
-    "derivatives", "pandas", "task-eat_acq-pre_agg-sub_corrs.tsv")
-
-export_filepath_plot = os.path.join(utils.load_config().bids_root,
-    "derivatives", "matplotlib", "task-eat_acqXint.png")
+export_name = f"task-eat_acqXint_source-{eat_source}_metric-{eat_metric}.png"
+export_filepath_plot = os.path.join(root_dir, "derivatives", "matplotlib", export_name)
 export_filepath_anova = export_filepath_plot.replace("matplotlib", "pingouin").replace(".png", "_anova.tsv")
 export_filepath_pwise = export_filepath_plot.replace("matplotlib", "pingouin").replace(".png", "_pwise.tsv")
 
@@ -42,7 +46,9 @@ df = pd.concat([df_pre, df_post], ignore_index=True)
 
 df["intervention"] = df["participant_id"].apply(lambda x: "svp" if int(x.split("-")[1])%2 == 0 else "bct")
 
-df = df.rename(columns={"actor_correlation-mean": "empathic_accuracy"})
+column = f"{eat_source}_correlation-{eat_metric}"
+
+df = df.rename(columns={column: "empathic_accuracy"})
 
 if positive_only:
     video_affect = {
@@ -150,7 +156,19 @@ for p, p_df in df.groupby("participant_id"):
 ax.axhline(0, linewidth=1, linestyle="solid", color="black")
 ax.set_xticks([xvals[:2].mean(), xvals[2:].mean()])
 ax.set_xticklabels(xticklabels)
-ylabel = r"Empathic accuracy, $r_{E}$"
+if eat_metric == "mean":
+    if eat_source == "actor":
+        ylabel = r"Empathic accuracy, $r_{actor}$"
+    elif eat_source == "crowd":
+        ylabel = r"Empathic accuracy, $r_{crowd}$"
+elif eat_metric == "std":
+    if eat_source == "actor":
+        ylabel = r"Empathic accuracy variability, $\sigma_{r_{actor}}$"
+    elif eat_source == "crowd":
+        ylabel = r"Empathic accuracy variability, $\sigma_{r_{crowd}}$"
+else:
+    ylabel = f"Empathic accuracy ({eat_source}, {eat_metric})"
+
 #ylabel += "\n" + r"$\rightarrow$ perfect agreement"
 ax.set_ylabel(ylabel)
 ax.set_xlabel("Intervention")
