@@ -23,37 +23,48 @@ plt.rcParams["axes.linewidth"] = 0.8 # edge line width
 
 
 root_dir = utils.load_config().bids_root
-export_name = "task-bct_correlations.png"
+export_name = "dreams.png"
 export_path = os.path.join(root_dir, "derivatives", "matplotlib", export_name)
 
 df, sidecar = utils.load_all_data()
 
-df = df.query("intervention=='bct'")
+# df = df.query("intervention=='bct'")
 
 columns = [
-    "cycle_correct",
-    # "cycle_response_time-mean",
-    # "cycle_response_time-std",
-    "rrate-mean",
-    "rrate-std",
-    # "actor_correlation-mean_pre",
-    "SMS_mind",
-    "attention_location_2",
-    "actor_correlation-mean_delta",
-    # "AS_arousal_1",
-    # "AS_pleasure_1",
+    # "Meditation_Prior",
+    "DRF",
+    "LDRF",
+    # "NMRF", "NMD",
+    # "Dream_Emo_Tone", "Dream_Emo_Intensity",
+    "Dream_Sharing", "Dream_Receiving",
+    "SES_affective", "SES_cognitive", "SES_associative",
+    # "SMS_mind", "SMS_body",
+    # "cycle_correct", "rrate-mean",
+    # "rrate-std",
+    "actor_correlation-mean_pre",
 ]
 
 column_labels = {
+    "DRF": "DRF",
+    "LDRF": "LDRF",
+    "NMRF": "NMRF",
+    "NMD": "NMD",
+    "Dream_Emo_Tone": "Dream\nemo tone",
+    "Dream_Emo_Intensity": "Dream\nemo intens",
+    "Dream_Sharing": "Dream\nsharing",
+    "Dream_Receiving": "Dream\nreceiving",
+    "Meditation_Prior": "Meditation\nfrequency",
     "SMS_mind": "SMS\nmind",
+    "SMS_body": "SMS\nbody",
     "SES_affective": "SES\naffective",
+    "SES_cognitive": "SES\ncognitive",
+    "SES_associative": "SES\nassociative",
     "cycle_correct": "BCT %",
     "rrate-mean": r"$f_{R}$",
     "rrate-std": r"$\sigma_{f_{R}}$",
     "actor_correlation-mean_pre": r"Empathy $r_{pre}$",
     "actor_correlation-mean_delta": r"$r_{post}-r_{pre}$",
     "actor_correlation-std_delta": r"$\sigma_{r_{post}}-\sigma_{r_{pre}}$",
-    "attention_location_2": "Audio\nfocus",
 }
 
 n_vars = len(columns)
@@ -90,6 +101,10 @@ for r in range(n_vars):
             a, b = df[[xvar, yvar]].dropna().values.T
             stats = pg.corr(a, b, method="spearman")
             rval, pval = stats.loc["spearman", ["r", "p-val"]]
+            xvar_is_dream = xvar.endswith("RF") or xvar.startswith("Dream")
+            yvar_is_dream = yvar.endswith("RF") or yvar.startswith("Dream")
+            if xvar_is_dream != yvar_is_dream:
+                rval *= -1
             r_txt = fr"$r={rval:.2f}$".replace("0.", ".")
             sigchars = "*" * sum([ pval < x for x in (.05, .01, .001) ])
             r_txt = sigchars + r_txt
@@ -111,6 +126,11 @@ for r in range(n_vars):
                 ax.tick_params(left=True, labelleft=True)
             if ax.get_subplotspec().is_last_row():
                 ax.tick_params(bottom=True, labelbottom=True)
+
+        if xvar.endswith("RF") or xvar.startswith("Dream"):
+            ax.invert_xaxis()
+        if r != c and (yvar.endswith("RF") or yvar.startswith("Dream")):
+            ax.invert_yaxis()
 
 fig.align_labels()
 

@@ -33,7 +33,7 @@ def find_source_files(task_label, extension):
     return sorted(file_list)
 
 
-def load_all_data():
+def load_all_data(exclude=False):
     """Load and merge survey data, BCT score, EAT scores
     so each participant is 1 row.
     """
@@ -74,6 +74,9 @@ def load_all_data():
             pre_col = col.replace("_post", "_pre")
             diff_col = col.replace("_post", "_delta")
             df[diff_col] = df[col].sub(df[pre_col])
+
+    if exclude:
+        df = df[df["included"]].reset_index(drop=True)
 
     return df, survey_sidecar
 

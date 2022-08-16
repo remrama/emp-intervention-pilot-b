@@ -25,12 +25,19 @@ export_filepath_trials = os.path.join(export_dir, export_basename_trials)
 
 df = utils.stack_raw_task_data("eat")
 
+# # Clunky way to select subset of trials.
+# df = df.reset_index(
+#     ).query("(acquisition_id.eq('acq-pre') & trial_number.isin([2, 3, 4])) | (acquisition_id.eq('acq-post') & trial_number.isin([2, 3, 4]))"
+#     ).set_index(["participant_id", "acquisition_id"])
+
 
 def get_correlation(ratings1, ratings2):
     # trim to account for minor size differences
     shortest_length = min((map(len, [ratings1, ratings2])))
     ratings1 = ratings1[:shortest_length]
     ratings2 = ratings2[:shortest_length]
+    # ratings1 = np.convolve(ratings1, np.ones(4), "valid") / 4
+    # ratings2 = np.convolve(ratings2, np.ones(4), "valid") / 4
     ratings1_z = stats.zscore(ratings1, nan_policy="raise")
     ratings2_z = stats.zscore(ratings2, nan_policy="raise")
     r, _ = stats.spearmanr(ratings1_z, ratings2_z)
