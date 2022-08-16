@@ -56,6 +56,13 @@ python eat-descr_correlations.py    # => pandas/task-eat_acq-pre_agg-sub_corrs.t
 # Merge the pre and post empathy task data into one file.
 python eat-merge_acqs.py            # => pandas/task-eat_agg-sub_corrs.tsv
 
+# Visualize the raw empathy accuracy task timecourses.
+python eat-plot_timecourses.py      # => matplotlib/task-eat_timecourses.png
+
+# Visualize the reported empathic accuracy strategy of each participant.
+python eat-strategy.py              # => matplotlib/task-eat_strategy.png
+python eat-joint.py                 # => matplotlib/task-eat_intrvXattention.png
+
 # Analyze/visualize the interaction between acquisition (pre, post) and intervention (svp/bct).
 python eat-interaction.py -s actor -m mean  # => pingouin/task-eat_acqXint_anova.tsv
                                             # => pingouin/task-eat_acqXint_pwise.tsv
@@ -64,14 +71,8 @@ python eat-interaction.py -s actor -m std
 python eat-interaction.py -s crowd -m mean
 python eat-interaction.py -s crowd -m std
 
-# Visualize lots of correlations between empathy and dreams.
-python eat-dreams.py                # => matplotlib/task-eatXdreams.png
-
-# Visualize the raw empathy accuracy task timecourses.
-python eat-plot_timecourses.py      # => matplotlib/task-eat_timecourses.png
-
-# Visualize the reported empathic accuracy strategy of each participant.
-python eat-strategy.py              # => matplotlib/task-eat_strategy.png
+# Visualize the impact of intervention on other empathy-related outcomes.
+python eat-outcomes.py                      # => matplotlib/task-eat_intrvXoutcomes.png
 ```
 
 ### Breath Counting Task analyses
@@ -89,21 +90,29 @@ python bct-plot_respirationrate.py  # => matplotlib/task-bct_rrate.png
                                     # => matplotlib/task-bct_rrate_desc.png
                                     # => pandas/task-bct_rrate.tsv
 python bct-plot_respirationrate_joint.py  # => matplotlib/task-bct_rrate_desc_joint.png
+
+# Visualize dependence between BCT measures and some outcomes.
+python bct-correlations.py          # => matplotlib/task-bct_correlations.png
+
+# Visualize where self-reported attention was during the intervention.
+python bct-attention.py             # => matplotlib/task-bct_attention_detailed.png
 ```
 
 ### More
 
 ```bash
+# Visualize baseline meditation frequency between conditions.
+python meditation.py                # => matplotlib/meditation_prior.png
+
+# Visualize relationships amongst dream traits and empathy.
+python dreams.py                    # => matplotlib/task-eatXdreams.png
+python dreamsXempathy.py            # => matplotlib/task-eatXdreams.png
+
+# Visualize some survey measures between conditions.
 python survey-anova.py -v SES       # => matplotlib/task-eat_intrvXses.png
                                     # => pingouin/task-eat_intrvXses_anova.tsv
                                     # => pingouin/task-eat_intrvXses_pwise.tsv
 python survey-anova.py -v SMS
 python survey-anova.py -v attention
 python survey-anova.py -v AS
-
-python bct-attention.py             # => matplotlib/task-bct_attention_detailed.png
-
-python meditation.py                # => matplotlib/meditation_prior.png
-python outcomes.py                  # => matplotlib/task-eat_intrvXoutcomes.png
-python bct-correlations.py          # => matplotlib/task-bct_correlations.png
 ```
